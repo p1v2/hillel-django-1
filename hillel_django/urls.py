@@ -19,15 +19,19 @@ from django.urls import path, include
 from rest_framework import routers
 
 import books.views
-from books.viewsets import BookViewSet, AuthorViewSet
+from books.viewsets import BookViewSet, AuthorViewSet, CountryViewSet
 
 router = routers.DefaultRouter()
 router.register("books", BookViewSet)
 router.register("authors", AuthorViewSet)
+router.register("country", CountryViewSet)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', books.views.books_view),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/countries/', include(router.urls))
 ]
+
+#Додати Rest ендпоінт /api/сountries який буде обробляти СountryViewset.
