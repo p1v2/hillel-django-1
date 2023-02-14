@@ -30,8 +30,7 @@ router.register("country", CountryViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', books.views.books_view),
-    path('api/', include(router.urls)),
-    path('api/countries/', include(router.urls))
+    path('api/', include(router.urls))
 ]
 
 #Додати Rest ендпоінт /api/сountries який буде обробляти СountryViewset.

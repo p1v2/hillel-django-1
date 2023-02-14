@@ -22,7 +22,7 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author)
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE)
     price = models.FloatField()
-    count_selled = models.IntegerField(null=True)
+    count_selled = models.FloatField()
 
     def __str__(self):
         return self.name
