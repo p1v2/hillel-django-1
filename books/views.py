@@ -6,3 +6,7 @@ from django.shortcuts import render
 
 def books_view(request):
     return HttpResponse('{"name": "Кобзар"}')
+
+
+def country_view(request):
+    return HttpResponse('{"name": "Ukraine"}')

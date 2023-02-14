@@ -21,6 +21,6 @@ class Command(BaseCommand):
             books_names_set.add(book_name)
 
             pages_count = randint(1, 1000)
-
-            Book.objects.create(name=book_name, pages_count=pages_count)
-            print(book_name, pages_count)
+            price = randint(200, 1000)
+            Book.objects.create(name=book_name, pages_count=pages_count, price=price)
+            print(book_name, pages_count, price)
