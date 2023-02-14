@@ -19,5 +19,5 @@ class AuthorViewSet(ModelViewSet):
 
 
 class CountryViewSet(ModelViewSet):
-    queryset = Country.objects.all()
+    queryset = Country.objects.all().annotate(count_selled_books=Count('book__count_selled'))
     serializer_class = CountrySerializer
