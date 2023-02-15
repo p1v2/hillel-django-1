@@ -6,7 +6,7 @@ from books.models import Book, Country, Author
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = ("id", "name")
+        fields = ("id", "name", "сount_selled_books")
 
 
 class AuthorSerializer(serializers.ModelSerializer):
