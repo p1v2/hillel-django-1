@@ -1,4 +1,4 @@
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Sum
 from rest_framework.viewsets import ModelViewSet
 
 from books.models import Book, Author, Country
@@ -19,5 +19,5 @@ class AuthorViewSet(ModelViewSet):
 
 
 class CountryViewSet(ModelViewSet):
-    queryset = Country.objects.all().annotate(count_selled_books=Count('book'))
+    queryset = Country.objects.all().annotate(count_selled_books=Sum('book__count_selled'))
     serializer_class = CountrySerializer
