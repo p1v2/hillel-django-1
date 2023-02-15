@@ -2,7 +2,7 @@ from django.db.models import Count, Avg
 from rest_framework.viewsets import ModelViewSet
 
 from books.models import Book, Author
-from books.serializers import BookSerializer, AuthorSerializer
+from books.serializers import BookSerializer, AuthorSerializer, CountrySerializer
 from hillel_django.permissions import IsSellerOrAdminOrReadOnly
 
 
@@ -16,3 +16,8 @@ class BookViewSet(ModelViewSet):
 class AuthorViewSet(ModelViewSet):
     queryset = Author.objects.all().annotate(books_count=Count('book'), average_price=Avg('book__price'))
     serializer_class = AuthorSerializer
+
+
+class CountryViewSet(ModelViewSet):
+    pass
+    serializer_class = CountrySerializer
