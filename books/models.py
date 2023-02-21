@@ -11,7 +11,7 @@ class Author(models.Model):
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
@@ -22,8 +22,9 @@ class Book(models.Model):
     pages_count = models.IntegerField(null=True)
     authors = models.ManyToManyField(Author)
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE)
-    price = models.FloatField()
+    price = models.FloatField(null=True)
     seller = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    count_selled = models.IntegerField()
 
     @property
     def authors_string(self):
