@@ -4,10 +4,9 @@ from books.models import Book, Country, Author
 
 
 class CountrySerializer(serializers.ModelSerializer):
-    count_selled_books = serializers.FloatField(read_only=True)
     class Meta:
         model = Country
-        fields = ("id", "name", "count_selled_books")
+        fields = ("id", "name")
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -20,9 +19,9 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
-    country = CountrySerializer()
-    authors = AuthorSerializer(many=True)
+    country = CountrySerializer(read_only=True)
+    authors = AuthorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Book
-        fields = ("id", "name", "country", "authors", "count_selled")
+        fields = ("id", "name", "country", "authors", "seller", "price", "is_archived")
