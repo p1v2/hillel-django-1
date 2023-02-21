@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+import dj_database_url
+
 from dotenv import load_dotenv
 import os
 
@@ -24,12 +26,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read()
+
+SECRET_KEY_PATH = os.path.join(BASE_DIR, "secret_key.txt")
+SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read() \
+    if os.path.exists(SECRET_KEY_PATH) else "SomeDummySecretKey"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG") == "True"
 
-ALLOWED_HOSTS = ["localhost"]
+
+ALLOWED_HOSTS = ["localhost", "hillel-django.herokuapp.com"]
+
 
 # Application definition
 
@@ -47,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,7 +89,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'hillel_django.authentication.SecretHeaderAuthentication',
-    ]
+        'hillel_django.permissions.IsAdminOrReadOnly'
+    ],
 }
 
 WSGI_APPLICATION = 'hillel_django.wsgi.application'
@@ -89,8 +98,13 @@ WSGI_APPLICATION = 'hillel_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+USE_POSTGRES = os.environ.get("USE_POSTGRES") == "True"
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    DEFAULT_DATABASE = dj_database_url.parse(DATABASE_URL)
+elif USE_POSTGRES:
+    DEFAULT_DATABASE = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ["DB_NAME"],
         'USER': os.environ["DB_USERNAME"],
@@ -98,7 +112,12 @@ DATABASES = {
         'HOST': os.environ["DB_HOST"],
         'PORT': '5432',
     }
-}
+else:
+    DEFAULT_DATABASE = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite',
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -133,6 +152,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

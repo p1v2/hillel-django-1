@@ -27,4 +27,3 @@ class IsSellerOrAdminOrReadOnly(BasePermission):
             return True
 
         return False
-
