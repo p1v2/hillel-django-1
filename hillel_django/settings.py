@@ -83,7 +83,7 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'hillel_django.permissions.NoArchivedBookPermission'
+        'hillel_django.permissions.IsSellerOrAdminOrReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',

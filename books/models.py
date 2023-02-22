@@ -24,6 +24,7 @@ class Book(models.Model):
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE, blank=True)
     price = models.FloatField()
     seller = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    count_selled = models.IntegerField(null=True)
     is_archived = models.BooleanField(null=True)
 
     @property
