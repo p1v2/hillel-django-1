@@ -1,6 +1,10 @@
 from urllib.request import Request
+
+import rest_framework
 from django.contrib.auth.models import User
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.request import WrappedAttributeError
 
 
 class GloryToUkraineAuthentication(BaseAuthentication):
@@ -14,6 +18,13 @@ class GloryToUkraineAuthentication(BaseAuthentication):
 class SecretHeaderAuthentication(BaseAuthentication):
     def authenticate(self, request: Request):
         secret_header = request.META.get("HTTP_SECRET_HEADER")
-        if secret_header.startswith("Some super secret"):
-            username = secret_header.split(" ")[-1]
-            return User.objects.get(username=username), None
+        if not secret_header:
+            raise AuthenticationFailed()
+        try:
+            if secret_header.startswith("Some super secret"):
+                username = secret_header.split(" ")[-1]
+                return User.objects.get(username=username), None
+        except User.DoesNotExist:
+            raise AuthenticationFailed()
+
+
