@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 
 
@@ -16,4 +18,10 @@ class SecretHeaderAuthentication(BaseAuthentication):
         secret_header = request.META.get("HTTP_SECRET_HEADER")
         if secret_header.startswith("Some super secret"):
             username = secret_header.split(' ')[-1]
-            return User.objects.get(username=username), None
+            try:
+                user = User.objects.get(username=username)
+            except ObjectDoesNotExist as e:
+                print(e)
+                raise AuthenticationFailed
+            else:
+                return user, None
