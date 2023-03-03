@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.request import Request
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class GloryToUkraineAuthentication(BaseAuthentication):
@@ -14,6 +15,16 @@ class GloryToUkraineAuthentication(BaseAuthentication):
 class SecretHeaderAuthentication(BaseAuthentication):
     def authenticate(self, request: Request):
         secret_header = request.META.get('HTTP_SECRET_HEADER')
+
+        if secret_header is None:
+            return None, None
+
         if secret_header.startswith('Some super secret'):
             username = secret_header.split(' ')[-1]
-            return User.objects.get(username=username), None
+            try:
+                user = User.objects.get(username=username)
+            except ObjectDoesNotExist as e:
+                print(e)
+                return None, None
+            else:
+                return user, None
