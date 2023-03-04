@@ -1,8 +1,11 @@
+import random
+
 from django.test import TestCase
 
 from faker import Faker
 
-from books.models import Book, Author
+from books.models import Book, Author, Country
+from django.contrib.auth.models import User
 
 
 class BookTestCase(TestCase):
@@ -33,3 +36,11 @@ class BookTestCase(TestCase):
         self.assertEqual(authors_string,
                          f"{self.author1.first_name} {self.author1.last_name}, "
                          f"{self.author2.first_name} {self.author2.last_name}")
+
+    def test_get_information(self):
+        book = Book.objects.get(name="Кобзар")
+        self.assertEqual(book.get_information(), f"{self.book.name}")
+
+    def test_get_information_empty_fields(self):
+        book = Book.objects.create(name="Тарас", author='Шевченко', price=777)
+        self.assertEqual(book.get_information(), f"{self.book.name} {self.book.authors} {self.book.price}")

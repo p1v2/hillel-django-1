@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 
 import dj_database_url
-
 from dotenv import load_dotenv
 import os
 
@@ -26,7 +25,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
 SECRET_KEY_PATH = os.path.join(BASE_DIR, "secret_key.txt")
 SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read() \
     if os.path.exists(SECRET_KEY_PATH) else "SomeDummySecretKey"
@@ -34,9 +32,7 @@ SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read() \
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG") == "True"
 
-
 ALLOWED_HOSTS = ["localhost", "hillel-django.herokuapp.com"]
-
 
 # Application definition
 
@@ -50,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'books',
+    'customers',
 ]
 
 MIDDLEWARE = [
@@ -83,14 +80,12 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'hillel_django.permissions.IsSellerOrAdminOrReadOnly'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'hillel_django.authentication.SecretHeaderAuthentication',
         'hillel_django.permissions.IsAdminOrReadOnly'
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 WSGI_APPLICATION = 'hillel_django.wsgi.application'
@@ -103,7 +98,7 @@ USE_POSTGRES = os.environ.get("USE_POSTGRES") == "True"
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL:
     DEFAULT_DATABASE = dj_database_url.parse(DATABASE_URL)
-elif USE_POSTGRES:
+else:
     DEFAULT_DATABASE = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ["DB_NAME"],
@@ -112,12 +107,15 @@ elif USE_POSTGRES:
         'HOST': os.environ["DB_HOST"],
         'PORT': '5432',
     }
-else:
-    DEFAULT_DATABASE = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite',
-    }
+# else:
+    # DEFAULT_DATABASE = {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': 'db.sqlite',
+    # }
 
+DATABASES = {
+    'default': DEFAULT_DATABASE
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

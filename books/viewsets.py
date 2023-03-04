@@ -1,12 +1,14 @@
-from django.db.models import Count, Avg, Sum
+from django.db.models import Count, Avg
 from rest_framework.viewsets import ModelViewSet
 
-from books.models import Book, Author, Country
-from books.serializers import BookSerializer, AuthorSerializer, CountrySerializer
+from books.models import Book, Author, Order
+from books.serializers import BookSerializer, AuthorSerializer, OrderSerializer
 from hillel_django.permissions import IsSellerOrAdminOrReadOnly
 
+
 class BookViewSet(ModelViewSet):
-    queryset = Book.objects.select_related('country').prefetch_related('authors').filter(is_archived=False)
+    queryset = Book.objects.select_related('country').prefetch_related('authors')
+
     serializer_class = BookSerializer
     permission_classes = [IsSellerOrAdminOrReadOnly]
 
@@ -15,6 +17,7 @@ class AuthorViewSet(ModelViewSet):
     queryset = Author.objects.all().annotate(books_count=Count('book'), average_price=Avg('book__price'))
     serializer_class = AuthorSerializer
 
-class CountryViewSet(ModelViewSet):
-    queryset = Country.objects.all().annotate(count_selled_books=Sum('book__count_selled'))
-    serializer_class = CountrySerializer
+
+class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
