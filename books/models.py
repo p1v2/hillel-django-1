@@ -26,6 +26,7 @@ class Book(models.Model):
     seller = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     is_archived = models.BooleanField(null=True, default=False)
     count_selled = models.IntegerField(null=True)
+    is_archived = models.BooleanField(null=True, default=False)
 
     def __str__(self):
         return self.name
