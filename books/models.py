@@ -29,21 +29,7 @@ class Book(models.Model):
     is_archived = models.BooleanField(null=True, default=False)
 
     def get_information(self):
-        info_author = {
-            'first_name': Author.first_name,
-            'last_name': Author.last_name,
-        }
-
-        info_book = {
-            'name': self.name,
-            'authors': self.authors,
-            'pages_count': self.pages_count,
-            'country': self.country,
-            'seller': self.seller,
-            'info_authors': info_author,
-        }
-
-        return info_book
+        return f'{self.name}, {self.pages_count}, {self.country}, {self.price}'
 
     def __str__(self):
         return self.name
