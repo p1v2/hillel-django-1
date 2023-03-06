@@ -13,4 +13,7 @@ def send_telegram_message(text):
         "chat_id": TELEGRAM_USER_ID,
         "text": text,
     }
-    requests.post(url, json=body)
+    response = requests.post(url, json=body)
+    print(response.text)
+    response.raise_for_status()
+
