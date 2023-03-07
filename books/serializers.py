@@ -22,8 +22,8 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
-    country = CountrySerializer()
-    authors = AuthorSerializer(many=True)
+    country = CountrySerializer(read_only=True)
+    authors = AuthorSerializer(many=True, read_only=True)
 
     serializer_method_field = serializers.SerializerMethodField("calculate_field")
 
@@ -32,8 +32,8 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ("id", "name", "country", "authors", "seller", "authors_string", "serializer_method_field",
-                  "count_sold")
+        fields = ("id", "name", "country", "authors", "seller", "price", "authors_string",
+                  "serializer_method_field", "is_archived")
 
 
 class OrderLineItemSerializer(serializers.ModelSerializer):
