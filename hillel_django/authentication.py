@@ -13,6 +13,7 @@ class GloryToUkraineAuthentication(BaseAuthentication):
             return User.objects.get(username="vitaliipavliuk"), None
 
 
+
 class SecretHeaderAuthentication(BaseAuthentication):
     def authenticate(self, request: Request):
         secret_header = request.META.get("HTTP_SECRET_HEADER")
@@ -29,3 +30,4 @@ class SecretHeaderAuthentication(BaseAuthentication):
                 return None, None
             else:
                 return user, None
+
