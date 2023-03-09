@@ -27,18 +27,15 @@ class Book(models.Model):
         return f'This book is {self.name} it has {self.pages_count} pages, it author is {self.authors} ' \
                f'Made in {self.country} ' \
                f'The price is {self.price} Seller is {self.seller}'
-    def get_information(self):
-        author_information = {
-            'first_name': Author.first_name,
-            'last_name': Author.last_name,
-        }
+    def get_information(self, book_name : str):
+        self.book = Book.objects.select_related('country').prefetch_related('authors').get(name=book_name)
+        author_full_name = [[a.first_name, a.last_name] for a in self.book.authors.all()]
         book_info = {
-            'name': self.name,
-            'pages_count': self.pages_count,
-            'authors': author_information,
-            'country': self.country,
-            'price': self.price,
-            'seller': self.seller,
+            'name': self.book.name,
+            'pages_count': self.book.pages_count,
+            'authors': [' '.join(a) for a in author_full_name],
+            'country': self.book.country.name if self.book.country_id else'no-info',
+            'price': self.book.price,
+            'seller': self.book.seller.username if self.book.seller_id else 'no-info',
         }
-
         return book_info
