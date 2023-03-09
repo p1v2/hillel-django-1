@@ -166,14 +166,14 @@ CELERY_TIMEZONE = "GMT"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
 
 
 CELERY_BEAT_SCHEDULE = {
     'run_every_5_seconds': {
         'task': 'books.tasks.run_every_5_seconds',
-        'schedule': timedelta(seconds=1),
+        'schedule': timedelta(seconds=5),
     },
     'run_on_cron_schedule': {
         'task': 'books.tasks.run_on_cron_schedule',

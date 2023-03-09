@@ -37,3 +37,8 @@ def send_customer_email(order_id):
 
     mail.attach("order.txt", f"Order {order.id} created", "text/plain")
     mail.send()
+
+
+@shared_task
+def run_every_5_seconds():
+    print("The task is running every 5 seconds...")
