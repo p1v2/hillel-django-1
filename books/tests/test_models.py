@@ -33,3 +33,8 @@ class BookTestCase(TestCase):
         self.assertEqual(authors_string,
                          f"{self.author1.first_name} {self.author1.last_name}, "
                          f"{self.author2.first_name} {self.author2.last_name}")
+
+    def test_get_information(self):
+        book_test_info = self.book.get_information()
+        self.assertEqual(book_test_info,
+                         "Book's name is Cobsar\nCountry is Netherlands\nCount of pages: 228\nPrice is 700")
