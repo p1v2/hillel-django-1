@@ -32,8 +32,8 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ("id", "name", "country", "authors", "seller", "price", "authors_string",
-                  "serializer_method_field", "is_archived")
+        fields = ("id", "name", "country", "authors", "seller", "authors_string",
+                  "serializer_method_field", "count_sold")
 
 
 class OrderLineItemSerializer(serializers.ModelSerializer):
