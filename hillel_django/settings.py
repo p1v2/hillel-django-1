@@ -9,10 +9,11 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from celery.schedules import crontab
 from dotenv import load_dotenv
 import os
 
@@ -157,3 +158,22 @@ STATIC_ROOT = BASE_DIR / "static"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_TIMEZONE = "GMT"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+
+CELERY_BEAT_SCHEDULE = {
+    'run_every_5_seconds': {
+        'task': 'books.tasks.run_every_5_seconds',
+        'schedule': timedelta(seconds=5),
+    },
+    'run_on_cron_schedule': {
+        'task': 'books.tasks.run_on_cron_schedule',
+        'schedule': crontab("*", "*", "*", "*", "*"),
+    }
+}
