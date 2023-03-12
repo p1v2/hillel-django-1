@@ -5,8 +5,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# from books.models import Author
-from books.models.author import Author
 from books.telegram import send_telegram_message
 from customers.models import Customer
 
