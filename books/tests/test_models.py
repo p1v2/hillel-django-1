@@ -104,7 +104,7 @@ class BookTestCase(TestCase):
 
         is_archived_info = self.book.get_information("Кобзар").get('is_archived')
 
-        self.assertEqual(is_archived_info, is_archived_info)
+        self.assertEqual(is_archived, is_archived_info)
 
     def test_book_get_information_is_archive_null(self):
         self.book.is_archived = None
@@ -112,7 +112,7 @@ class BookTestCase(TestCase):
 
         is_archived_info = self.book.get_information("Кобзар").get('is_archived')
 
-        self.assertEqual(is_archived_info, is_archived_info)
+        self.assertEqual(is_archived_info, None)
 
     def test_book_get_information_authors_empty(self):
         authors_info = self.book.get_information("Кобзар").get('authors')

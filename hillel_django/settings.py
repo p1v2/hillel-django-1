@@ -9,10 +9,11 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
+from celery.schedules import crontab
 from dotenv import load_dotenv
 import os
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_celery_beat',
     'books',
     'customers',
 ]
@@ -83,6 +85,7 @@ REST_FRAMEWORK = {
         'hillel_django.permissions.IsAdminOrReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'hillel_django.authentication.SecretHeaderAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'hillel_django.authentication.SecretHeaderAuthentication',
@@ -136,6 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -158,3 +162,40 @@ STATIC_ROOT = BASE_DIR / "static"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_TIMEZONE = "GMT"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# CELERY_BROKER_URL = "redis://redis:6379"
+# CELERY_RESULT_BACKEND = "redis://redis:6379"
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+CELERY_BEAT_SCHEDULE = {
+    'run_every_5_seconds': {
+        'task': 'books.tasks.run_every_5_seconds',
+        'schedule': timedelta(seconds=5),
+    },
+    'run_on_cron_schedule': {
+        'task': 'books.tasks.run_on_cron_schedule',
+        'schedule': crontab("*", "*", "*", "*", "*"),
+    },
+    'statistic_sending': {
+            'task': 'books.tasks.statistic_sending',
+            'schedule': crontab("16", "14", "*", "*", "*")
+    }
+}
+
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+#     EMAIL_FILE_PATH = '/tmp/app-messages'
+# else:
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ["GMAIL_FROM_EMAIL"]
+EMAIL_HOST_PASSWORD = os.environ["GMAIL_KEY"] #past the key or password app here
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = os.environ["GMAIL_FROM_EMAIL"]

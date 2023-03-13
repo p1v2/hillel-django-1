@@ -16,12 +16,16 @@ class GloryToUkraineAuthentication(BaseAuthentication):
 class SecretHeaderAuthentication(BaseAuthentication):
     def authenticate(self, request: Request):
         secret_header = request.META.get("HTTP_SECRET_HEADER")
+
+        if secret_header is None:
+            return None, None
+
         if secret_header.startswith("Some super secret"):
             username = secret_header.split(' ')[-1]
             try:
                 user = User.objects.get(username=username)
             except ObjectDoesNotExist as e:
                 print(e)
-                raise AuthenticationFailed
+                return None, None
             else:
                 return user, None
