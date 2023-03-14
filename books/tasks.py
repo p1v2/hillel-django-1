@@ -52,9 +52,11 @@ def new_order_created(order_id):
     quantity = instance.quantity
     b: Book = Book.objects.get(name=book_name)
     authors = b.authors.all()
-    for a in authors:
-        text = f'"Hi, {a.first_name}! You have a your book sold ({quantity} inst.). Sincerely, your Oleg Zadniprovskyi"'
-        send_telegram_message(text, a.telegram_account_id)
+    for author in authors:
+        if author.telegram_account_id:
+            text = f'"Hi, {author.first_name}! You have a your book sold ({quantity} inst.). Sincerely, your Oleg ' \
+                   f'Zadniprovskyi" '
+            send_telegram_message(text, author.telegram_account_id)
 
 
 @shared_task
