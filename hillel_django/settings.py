@@ -176,8 +176,8 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(seconds=5),
     },
     'run_on_cron_schedule': {
-        'task': 'books.tasks.run_on_cron_schedule',
-        'schedule': crontab("*", "*", "*", "*", "*"),
+        'task': 'books.tasks.run_on_cron_schedule_count_of_books',
+        'schedule': crontab("00", "20", "*", "*", "*"),
     }
 }
 
