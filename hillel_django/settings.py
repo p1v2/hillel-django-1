@@ -178,6 +178,10 @@ CELERY_BEAT_SCHEDULE = {
     'run_on_cron_schedule': {
         'task': 'books.tasks.run_on_cron_schedule',
         'schedule': crontab("*", "*", "*", "*", "*"),
+    },
+    'timetable_sending':{
+        'task': 'books.tasks.timetable_sending',
+        'schedule': crontab("12", "45", "*", "*", "*")
     }
 }
 

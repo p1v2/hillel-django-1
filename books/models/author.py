@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Author(models.Model):
+    telegram_account_id = models.IntegerField(null=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
 
