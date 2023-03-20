@@ -117,7 +117,7 @@ else:
     }
 
 DATABASES = {
-    'default': DEFAULT_DATABASE
+    'default': DEFAULT_DATABASE,
 }
 
 # Password validation

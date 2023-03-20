@@ -47,9 +47,16 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = ("email", "phone_number")
 
 
+class SimpleBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ("id", "name")
+
+
 class OrderSerializer(serializers.ModelSerializer):
     line_items = OrderLineItemSerializer(many=True)
     customer = CustomerSerializer()
+    books = SimpleBookSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         customer_data = validated_data['customer']
@@ -84,4 +91,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "line_items", "customer")
+        fields = ("id", "line_items", "customer", "books")
