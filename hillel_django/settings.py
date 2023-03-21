@@ -17,6 +17,8 @@ from celery.schedules import crontab
 from dotenv import load_dotenv
 import os
 
+from rest_framework import settings
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -85,7 +87,6 @@ REST_FRAMEWORK = {
         'hillel_django.permissions.IsAdminOrReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'hillel_django.authentication.SecretHeaderAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ]
@@ -193,3 +194,4 @@ EMAIL_HOST_PASSWORD = os.environ["GMAIL_KEY"] #past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ["GMAIL_FROM_EMAIL"]
+
