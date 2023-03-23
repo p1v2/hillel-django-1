@@ -14,7 +14,7 @@ class BookViewSet(ModelViewSet):
     permission_classes = [IsSellerOrAdminOrReadOnly]
 
 class AuthorViewSet(ModelViewSet):
-    queryset = Author.objects.all().annotate(books_count=Count('book'), average_price=Avg('book__price'))
+    queryset = Author.objects.all().annotate(books_count=Count('books'), average_price=Avg('books__price'))
     serializer_class = AuthorSerializer
 
 

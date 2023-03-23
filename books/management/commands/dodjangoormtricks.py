@@ -1,7 +1,12 @@
 from django.core.management import BaseCommand
-from django.db.models import Q, Prefetch
+from django.db.models import Q
 
-from books.models import Book, Author
+from books.models import Book
+
+
+# from django.db.models import Q, Prefetch
+#
+# from books.models import Book, Author, Order, GiftPackaging
 
 
 class Command(BaseCommand):
@@ -185,6 +190,26 @@ class Command(BaseCommand):
         #     print(book.authors.all())
         #     print(book.starred_authors.all())
 
-        # Explain query
-        books_explain = Book.objects.filter(authors__first_name="Мирон").explain(ANALYZE=True)
-        print(books_explain)
+        # # Explain query
+        # books_explain = Book.objects.filter(authors__first_name="Мирон").explain(ANALYZE=True)
+        # print(books_explain)
+
+        # Select related when using nested relations
+        # books_with_packaging = Order.objects.select_related("packaging", "packaging__giftpackaging").all()
+
+        # gift_packagings = GiftPackaging.objects.all().select_related("packaging_ptr", "packaging_ptr__order")
+
+        # Union query
+        # Select all books that have name "Alicia" or "Kobzar"
+        books = Book.objects.filter(name__contains="Alicia").union(Book.objects.filter(name__contains="Kobzar"))
+        # Using filter with or
+        books = Book.objects.filter(Q(name__contains="Alicia") | Q(name__contains="Kobzar"))
+        print(books)
+
+        # Intersection query
+        # Select all books that have author Vitalii and have name "Alicia"
+        Book.objects.filter(authors__first_name="Vitalii").intersection(Book.objects.filter(name__contains="Alicia"))
+
+        # Difference query
+        # Select all books that have author Vitalii and don't have name "Alicia"
+        Book.objects.filter(authors__first_name="Vitalii").difference(Book.objects.filter(name__contains="Alicia"))
