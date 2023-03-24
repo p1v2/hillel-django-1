@@ -178,6 +178,10 @@ CELERY_BEAT_SCHEDULE = {
     'run_on_cron_schedule': {
         'task': 'books.tasks.run_on_cron_schedule',
         'schedule': crontab("*", "*", "*", "*", "*"),
+    },
+    'statistic_sending': {
+        'task': 'books.tasks.statistic_sending',
+        'schedule': crontab("15", "13", "*", "*", "*")
     }
 }
 
@@ -186,10 +190,10 @@ CELERY_BEAT_SCHEDULE = {
 #     EMAIL_FILE_PATH = '/tmp/app-messages'
 # else:
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ["GMAIL_FROM_EMAIL"]
-EMAIL_HOST_PASSWORD = os.environ["GMAIL_KEY"] #past the key or password app here
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = os.environ["GMAIL_FROM_EMAIL"]
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = os.environ["GMAIL_FROM_EMAIL"]
+# EMAIL_HOST_PASSWORD = os.environ["GMAIL_KEY"] #past the key or password app here
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = os.environ["GMAIL_FROM_EMAIL"]
