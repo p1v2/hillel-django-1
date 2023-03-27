@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 
 from books.models import Author
@@ -30,6 +31,11 @@ class BookManager(models.Manager):
         return super().get_queryset().prefetch_related("authors").filter(is_archived=False)
 
     def create(self, **kwargs):
+        # Reset books cache
+        keys = cache.keys(':1:books:*')
+        for key in keys:
+            cache.delete(key)
+
         kwargs["is_archived"] = False
         return super().create(**kwargs)
 
@@ -49,7 +55,7 @@ class ArchivedBookManager(models.Manager):
 class Book(Item):
     name = models.CharField(max_length=40, unique=True)
     pages_count = models.IntegerField(null=True, db_index=True)
-    authors = models.ManyToManyField(Author)
+    authors = models.ManyToManyField(Author, blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE)
     seller = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     is_archived = models.BooleanField(default=False)

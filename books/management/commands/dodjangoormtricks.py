@@ -96,7 +96,13 @@ class Command(BaseCommand):
         # book3 = Book(name="Book 3", price=300)
         #
         # Book.objects.bulk_create([book1, book2, book3], batch_size=1000)
+
+        # books = []
+        # for i in range(1000):
+        #     books.append(Book(name=f"Book {i}", price=100))
         #
+        # Book.objects.bulk_create(books, batch_size=1000)
+
         # # Bulk update
         # Book.objects.filter(name__contains="Book").update(price=1000)
         # # SQL: UPDATE "books_book" SET "price" = 1000 WHERE "books_book"."name" LIKE %Book%
