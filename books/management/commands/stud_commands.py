@@ -81,3 +81,5 @@ class Command(BaseCommand):
         for lesson in lessons:
             print(
                 f"Lesson topic: {lesson.topic}, Teacher: {lesson.teacher.first_name} {lesson.teacher.last_name}")
+            
+            
