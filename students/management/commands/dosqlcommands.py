@@ -12,24 +12,18 @@ class Command(BaseCommand):
         #  queryset = LessonStudent.objects.filter(mark__gte=8, lesson__date_time__startswith='2023-03-28')
         
         #  Усі уроки, які викладає викладач з прізвищем "Ковалюк"
-        #  queryset = Teachers.objects.filter(last_name="Ковалюк")
+        #  queryset = Lessons.objects.filter(teacher__last_name="Ковалюк")
+        
         
         #  Усіх(filter) студентів, чия (avg)середня оцінка вище ніж (avg)середня оцінка класу для певного уроку(group by)
-        #  queryset = LessonStudent.objects.filter(mark__gte=Avg('mark')).annotate(Avg("mark")).values('student__first_name')
-        
+        #  queryset = Students.objects.filter(lessonstudent__mark__gte=Avg('lessonstudent__mark')).annotate(Avg("lessonstudent__mark")).values('first_name')
+
 
         #  Топ-5 студентів із найвищою оцінкою за всі уроки.
         #  queryset = LessonStudent.objects.all().annotate(Avg("mark")).values('student__first_name').order_by("mark")[:5]
         
         #  Відсоток студентів, які отримали оцінку 5 або вище для кожного уроку.
-        #queryset = LessonStudent.objects.annotate(result=Count("mark", filter=Q(mark__gte=5)))
-        #counter = 0
-        #for i in queryset:
-        #   temp = None
-        #    if i.result != 0:
-        #        counter += 1
-        #        temp = (i.result / counter) * 100
-        #    print(temp)
+        #  queryset = LessonStudent.objects.filter(mark__gte=5).values('lesson_id').annotate(num_students=Count('id'), num_passing_students=Count('id', filter=Q(mark__gte=5))).annotate(percent_passing_students=100 * Avg('num_passing_students') / Avg('num_students')).values('lesson_id', 'percent_passing_students')
 
         #  Кількість уроків, які провів кожен викладач.
         #  queryset = Lessons.objects.values("teacher_id").annotate(Count("topic"))
