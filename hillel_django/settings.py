@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'books',
     'customers',
+    'students',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +90,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'hillel_django.authentication.SecretHeaderAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
+    'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'] if not DEBUG else [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ]
 }
 
@@ -118,7 +125,8 @@ else:
     }
 
 DATABASES = {
-    'default': DEFAULT_DATABASE
+    'default': DEFAULT_DATABASE,
+    'students': dj_database_url.parse("postgres://vgzibcntmwkwjt:fa5731545dbdb678b43e21db8ba7e214225d3bc7eec20ebd87f1d2cfce50e636@ec2-34-250-252-161.eu-west-1.compute.amazonaws.com:5432/df6mqa9p7d1v6o")
 }
 
 # Password validation
@@ -167,10 +175,16 @@ CELERY_TIMEZONE = "GMT"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+
 # CELERY_BROKER_URL = "redis://redis:6379"
 # CELERY_RESULT_BACKEND = "redis://redis:6379"
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# CELERY_BROKER_URL = "redis://localhost:6379"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+REDIS_HOST = os.environ.get("REDIS_HOST")
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:6379"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:6379"
+
 
 CELERY_BEAT_SCHEDULE = {
     'run_every_5_seconds': {
@@ -199,3 +213,78 @@ EMAIL_HOST_PASSWORD = os.environ["GMAIL_KEY"] #past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ["GMAIL_FROM_EMAIL"]
+
+
+LOGGING = {
+    'version': 1,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
+}
+
+
+# Redis cache
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# In-memory cache
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+#         "LOCATION": "unique-snowflake"
+#     }
+# }
+
+# File cache
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+#         "LOCATION": "/tmp/django_cache"
+#     }
+# }
+
+# Memcached cache
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
+#         "LOCATION": "",
+#     }
+# }
+
+# Database cache
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+#         "LOCATION": "my_cache_table",
+#     }
+# }
+
+# Dummy cache
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+#     }
+# }
+

@@ -4,6 +4,8 @@ from rest_framework import serializers
 from books.models import Book, Country, Author, Order, OrderLineItem
 from customers.models import Customer
 
+import time
+
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,13 +28,24 @@ class BookSerializer(serializers.ModelSerializer):
 
     serializer_method_field = serializers.SerializerMethodField("calculate_field")
 
+    tags = serializers.SerializerMethodField("get_tags")
+
+    def get_tags(self, book):
+        # Imagine that we get tags from somewhere
+        # response = requests.get("https://example.com/tags")
+        # return response.json()
+        # For testing purposes we will sleep instead of making a request
+        time.sleep(0.1)
+
+        return ["tag1", "tag2"]
+
     def calculate_field(self, book):
         return f"This is some string of book {book.name}"
 
     class Meta:
         model = Book
         fields = ("id", "name", "country", "authors", "seller", "authors_string", "serializer_method_field",
-                  "count_sold")
+                  "count_sold", "tags", "price")
 
 
 class OrderLineItemSerializer(serializers.ModelSerializer):
@@ -47,9 +60,16 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = ("email", "phone_number")
 
 
+class SimpleBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ("id", "name")
+
+
 class OrderSerializer(serializers.ModelSerializer):
     line_items = OrderLineItemSerializer(many=True)
     customer = CustomerSerializer()
+    books = SimpleBookSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         customer_data = validated_data['customer']
@@ -84,4 +104,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "line_items", "customer")
+        fields = ("id", "line_items", "customer", "books")
