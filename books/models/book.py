@@ -34,11 +34,6 @@ class BookManager(models.Manager):
         return super().get_queryset().prefetch_related("authors").filter(is_archived=False)
 
     def create(self, **kwargs):
-        # Reset books cache
-        keys = cache.keys(':1:books:*')
-        for key in keys:
-            cache.delete(key)
-
         kwargs["is_archived"] = False
         return super().create(**kwargs)
 
@@ -104,7 +99,8 @@ class Book(Item):
 @receiver(post_save, sender=Country)
 @receiver(post_delete, sender=Country)
 def reset_book_cache(*args, **kwargs):
-    print("Resetting books cache")
-    keys = cache.keys('books:*') + cache.keys('book:*')
-    for key in keys:
-        cache.delete(key)
+    pass
+    # print("Resetting books cache")
+    # keys = cache.keys('books:*') + cache.keys('book:*')
+    # for key in keys:
+    #     cache.delete(key)

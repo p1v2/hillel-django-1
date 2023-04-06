@@ -1,20 +1,32 @@
 from django.core.cache import cache
 from django.db.models import Count, Avg
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from books.filters import BookFilter
 from books.models import Book, Author, Order, Country
 from books.pagination import BookPagination, SomeCustomPagination
-from books.serializers import BookSerializer, AuthorSerializer, OrderSerializer, CountrySerializer
+from books.serializers import BookSerializer, AuthorSerializer, OrderSerializer, CountrySerializer, \
+    AuthorBooksSerializer
 from hillel_django.permissions import IsSellerOrAdminOrReadOnly
 
 
-class BookViewSet(ModelViewSet):
-    queryset = Book.objects.select_related('country').prefetch_related('authors')
-
+class BaseBookViewset(ModelViewSet):
     serializer_class = BookSerializer
     permission_classes = [IsSellerOrAdminOrReadOnly]
-    pagination_class = BookPagination
+    authentication_classes = [SessionAuthentication]
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    # ordering_fields = ["name", "price"]
+    filterset_class = BookFilter
+
+
+class BookViewSet(BaseBookViewset):
+    queryset = Book.objects.select_related('country').prefetch_related('authors')
 
     def list(self, request, *args, **kwargs):
         # Check if books are cached
@@ -70,3 +82,26 @@ class CountryViewSet(ModelViewSet):
         cache.set("countries", response.data)
 
         return response
+
+
+class AuthorBooksViewSet(BaseBookViewset):
+    serializer_class = AuthorBooksSerializer
+
+
+    def create(self, request, *args, **kwargs):
+        request.data['authors'] = [self.kwargs['author_id']]
+
+        return super().create(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Book.objects.filter(authors__id=self.kwargs['author_id'])
+
+    def list(self, request, *args, **kwargs):
+        # Get is_archived from GET params
+        is_archived = request.GET.get('is_archived', False)
+
+        # Get books according to is_archived
+        if is_archived:
+            self.queryset = self.queryset.filter(is_archived=True)
+
+        return super().list(request, *args, **kwargs)
