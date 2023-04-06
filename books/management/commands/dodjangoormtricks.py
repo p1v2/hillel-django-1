@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from books.models import Book
 
@@ -219,3 +219,7 @@ class Command(BaseCommand):
         # Difference query
         # Select all books that have author Vitalii and don't have name "Alicia"
         Book.objects.filter(authors__first_name="Vitalii").difference(Book.objects.filter(name__contains="Alicia"))
+
+        # book = Book.objects.annotate(Count("authors"))
+        # books = Book.objects.all().select_related("authors")
+        # print(books)
