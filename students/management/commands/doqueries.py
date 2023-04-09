@@ -34,4 +34,4 @@ class Command(BaseCommand):
 
         # 8. Всі уроки, які провів викладач з прізвищем "Rogers" обʼєднані з уроками які провів викладач з прізвищем "Huerta".
         # collaboration = Lessons.objects.filter(teacher="Rogers").union(Lessons.objects.filter(teacher="Huerta"))
-
+        # print(collaboration)
