@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.template.defaulttags import url
 from django.urls import path, include, re_path
 from django.views.decorators.cache import cache_page
 from drf_yasg import openapi
@@ -24,9 +25,10 @@ from drf_yasg.views import get_schema_view
 from rest_framework import routers, permissions
 from rest_framework.authtoken.views import obtain_auth_token
 
+from books.auth_views import login_view, register_view, logout_view
 from books.views import books_csv_export, books_pdf_export
 from books.viewsets import BookViewSet, AuthorViewSet, OrderViewSet, CountryViewSet, AuthorBooksViewSet
-from hillel_django.views import session_auth, now_page
+from hillel_django.views import now_page
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -49,8 +51,11 @@ router.register("authors/(?P<author_id>\\d+)/books", AuthorBooksViewSet, basenam
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/token-auth', obtain_auth_token),
-    path('api/session-auth', session_auth),
+    # path('api/token-auth', obtain_auth_token),
+    # path('api/session-auth', session_auth),
+    path("api/login", login_view),
+    path("api/register", register_view),
+    path("api/logout", logout_view),
     path('cached-page', cache_page(5)(now_page)),
     path('non-cached-page', now_page),
     path('books-csv', books_csv_export),

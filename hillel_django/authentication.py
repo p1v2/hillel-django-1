@@ -18,7 +18,8 @@ class SecretHeaderAuthentication(BaseAuthentication):
         secret_header = request.META.get("HTTP_SECRET_HEADER")
 
         if secret_header is None:
-            return None, None
+            print("No secret header")
+            return None
 
         if secret_header.startswith("Some super secret"):
             username = secret_header.split(' ')[-1]
@@ -26,6 +27,6 @@ class SecretHeaderAuthentication(BaseAuthentication):
                 user = User.objects.get(username=username)
             except ObjectDoesNotExist as e:
                 print(e)
-                return None, None
+                return None
             else:
                 return user, None
