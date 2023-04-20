@@ -54,8 +54,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.telegram',
+    'celery',
     'books',
     'customers',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -188,8 +190,15 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 REDIS_HOST = os.environ.get("REDIS_HOST")
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:6379"
-CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:6379"
+
+# Celery with Redis
+# CELERY_BROKER_URL = f"redis://{REDIS_HOST}:6379"
+# CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:6379"
+
+# Celery with RabbitMQ
+RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST")
+CELERY_BROKER_URL = os.environ.get("CLOUDAMQP_URL", f"amqp://guest:guest@{RABBITMQ_HOST}:5672/")
+CELERY_RESULT_BACKEND = 'django-db'
 
 
 CELERY_BEAT_SCHEDULE = {
@@ -301,6 +310,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'profile',
             'email',
             'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive',
         ],
         'AUTH_PARAMS': {
             'access_type': 'offline',
@@ -314,4 +324,4 @@ SITE_ID = 2
 LOGIN_REDIRECT_URL = '/admin'
 LOGOUT_REDIRECT_URL = '/'
 
-STORE_TOKENS = True
+SOCIALACCOUNT_STORE_TOKENS = True
