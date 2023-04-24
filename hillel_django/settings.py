@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphene_django',
     'rest_framework',
     'rest_framework.authtoken',
     'django_celery_beat',
@@ -325,3 +326,8 @@ LOGIN_REDIRECT_URL = '/admin'
 LOGOUT_REDIRECT_URL = '/'
 
 SOCIALACCOUNT_STORE_TOKENS = True
+
+GRAPHENE = {
+    "SCHEMA": "hillel_django.schema.schema"
+}
+

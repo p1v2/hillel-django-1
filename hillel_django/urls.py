@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include, re_path
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from graphene_django.views import GraphQLView
 # from drf_yasg import openapi
 # from drf_yasg.views import get_schema_view
 
@@ -51,6 +53,7 @@ router.register("authors/(?P<author_id>\\d+)/books", AuthorBooksViewSet, basenam
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path("graphql", GraphQLView.as_view(graphiql=True)),
     # path('api/token-auth', obtain_auth_token),
     # path('api/session-auth', session_auth),
     path("api/login", login_view),
