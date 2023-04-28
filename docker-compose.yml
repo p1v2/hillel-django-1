@@ -3,14 +3,15 @@ services:
     container_name: web
     build:
       context: .
-    image: registry.heroku.com/hillel-django/web
+    image: hillel_django-web
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     env_file: .env
     environment:
-      - REDIS_HOST=redis
+#      - REDIS_HOST=redis
+      - RABBITMQ_HOST=rabbitmq
       - DB_HOST=db
       - DB_USERNAME=postgres
       - DB_PASSWORD=admin123
@@ -19,33 +20,40 @@ services:
   migrate:
     build:
       context: .
-    image: registry.heroku.com/hillel-django/release
+    image: hillel_django-web
     depends_on:
       - db
     volumes:
       - .:/app
     env_file: .env
     environment:
-      - REDIS_HOST=redis
+#      - REDIS_HOST=redis
+      - RABBITMQ_HOST=rabbitmq
       - DB_HOST=db
       - DB_USERNAME=postgres
       - DB_PASSWORD=admin123
       - DB_NAME=postgres
     command: python manage.py migrate
     restart: on-failure
-  redis:
-    image: redis
+#  redis:
+#    image: redis
+#    ports:
+#      - "63799:6379"
+  rabbitmq:
+    image: rabbitmq:3-management
     ports:
-      - "63799:6379"
+      - "5672:5672"
+      - "15672:15672"
   celery:
     depends_on:
       - db
-      - redis
-    image: hillel_django
+      - rabbitmq
+    image: hillel_django-web
     volumes:
       - .:/app
     env_file: .env
     environment:
+      - RABBITMQ_HOST=rabbitmq
       - REDIS_HOST=redis
       - DB_HOST=db
       - DB_USERNAME=postgres

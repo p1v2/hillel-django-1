@@ -12,7 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         books_names_set = set(Book.objects.all().values_list("name", flat=True))
 
-        for _ in range(1000):
+        for _ in range(50000):
             book_name = fake.name()
 
             if book_name in books_names_set:

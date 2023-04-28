@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from books.models import Book
 
@@ -96,7 +96,13 @@ class Command(BaseCommand):
         # book3 = Book(name="Book 3", price=300)
         #
         # Book.objects.bulk_create([book1, book2, book3], batch_size=1000)
+
+        # books = []
+        # for i in range(1000):
+        #     books.append(Book(name=f"Book {i}", price=100))
         #
+        # Book.objects.bulk_create(books, batch_size=1000)
+
         # # Bulk update
         # Book.objects.filter(name__contains="Book").update(price=1000)
         # # SQL: UPDATE "books_book" SET "price" = 1000 WHERE "books_book"."name" LIKE %Book%
@@ -213,3 +219,7 @@ class Command(BaseCommand):
         # Difference query
         # Select all books that have author Vitalii and don't have name "Alicia"
         Book.objects.filter(authors__first_name="Vitalii").difference(Book.objects.filter(name__contains="Alicia"))
+
+        # book = Book.objects.annotate(Count("authors"))
+        # books = Book.objects.all().select_related("authors")
+        # print(books)
