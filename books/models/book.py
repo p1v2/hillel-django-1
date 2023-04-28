@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 from books.models import Author
 from books.models import Country
@@ -27,15 +29,11 @@ class BookQueryset(models.QuerySet, CheapMixin):
 
 class BookManager(models.Manager):
     _queryset_class = BookQueryset
+
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("authors").filter(is_archived=False)
+        return super().get_queryset().filter(is_archived=False)
 
     def create(self, **kwargs):
-        # Reset books cache
-        keys = cache.keys(':1:books:*')
-        for key in keys:
-            cache.delete(key)
-
         kwargs["is_archived"] = False
         return super().create(**kwargs)
 
@@ -62,7 +60,7 @@ class Book(Item):
     is_archived = models.BooleanField(null=True, default=False)
     count_sold = models.IntegerField(default=0)
     pages_count = models.IntegerField(null=True, db_index=True)
-    authors = models.ManyToManyField(Author, blank=True)
+    authors = models.ManyToManyField(Author, blank=True, related_name="books")
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE)
     seller = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     is_archived = models.BooleanField(default=False)
@@ -108,3 +106,23 @@ class Book(Item):
 
         # Do not run migrations for this model
         managed = False
+
+
+# Model
+# signals = []
+
+# def receiver(func):
+#    signals.append(func)
+#    return func
+@receiver(post_save, sender=Book)
+@receiver(post_delete, sender=Book)
+@receiver(post_save, sender=Author)
+@receiver(post_delete, sender=Author)
+@receiver(post_save, sender=Country)
+@receiver(post_delete, sender=Country)
+def reset_book_cache(*args, **kwargs):
+    pass
+    # print("Resetting books cache")
+    # keys = cache.keys('books:*') + cache.keys('book:*')
+    # for key in keys:
+    #     cache.delete(key)
