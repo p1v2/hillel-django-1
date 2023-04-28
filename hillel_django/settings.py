@@ -31,9 +31,9 @@ SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read() \
     if os.path.exists(SECRET_KEY_PATH) else "SomeDummySecretKey"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG") == "True"
+DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "hillel-django.herokuapp.com"]
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -49,12 +49,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_celery_beat',
     'django_filters',
-    'drf_yasg',
+    'drf_yasg', 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.telegram',
+    'allauth.socialaccount.providers.github',
     'celery',
     'books',
     'customers',
@@ -121,11 +121,11 @@ WSGI_APPLICATION = 'hillel_django.wsgi.application'
 
 USE_POSTGRES = os.environ.get("USE_POSTGRES") == "True"
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+
+'''DATABASE_URL = os.environ.get("POSTGRES_DATABASE_URL")
 if DATABASE_URL:
-    DEFAULT_DATABASE = dj_database_url.parse(DATABASE_URL)
-elif USE_POSTGRES:
-    DEFAULT_DATABASE = {
+    DEFAULT_DATABASE = dj_database_url.parse(DATABASE_URL)'''
+DEFAULT_DATABASE = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ["DB_NAME"],
         'USER': os.environ["DB_USERNAME"],
@@ -133,11 +133,7 @@ elif USE_POSTGRES:
         'HOST': os.environ["DB_HOST"],
         'PORT': '5432',
     }
-else:
-    DEFAULT_DATABASE = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite',
-    }
+
 
 DATABASES = {
     'default': DEFAULT_DATABASE,
@@ -218,13 +214,13 @@ CELERY_BEAT_SCHEDULE = {
 #     EMAIL_FILE_PATH = '/tmp/app-messages'
 # else:
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+"""EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.environ["GMAIL_FROM_EMAIL"]
 EMAIL_HOST_PASSWORD = os.environ["GMAIL_KEY"] #past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = os.environ["GMAIL_FROM_EMAIL"]
+DEFAULT_FROM_EMAIL = os.environ["GMAIL_FROM_EMAIL"]"""
 
 
 LOGGING = {
@@ -317,8 +313,14 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'offline',
         }
     },
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
+    }
 }
-
 # Django-allauth
 SITE_ID = 2
 

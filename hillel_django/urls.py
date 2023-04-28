@@ -66,7 +66,7 @@ urlpatterns = [
     re_path(r'^api/swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^api/swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^api/redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path("", TemplateView.as_view(template_name="index.html")),
     path("accounts/", include("allauth.urls")),
+    path("", TemplateView.as_view(template_name="index.html")),
     path("logout", LogoutView.as_view()),
 ]
