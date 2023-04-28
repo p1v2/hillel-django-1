@@ -17,6 +17,7 @@ from hillel_django.permissions import IsSellerOrAdminOrReadOnly
 
 
 class BaseBookViewset(ModelViewSet):
+
     serializer_class = BookSerializer
     permission_classes = [IsSellerOrAdminOrReadOnly]
     authentication_classes = [SessionAuthentication]

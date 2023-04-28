@@ -33,7 +33,7 @@ SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read() \
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG") == "True"
 
-ALLOWED_HOSTS = ["localhost", "hillel-django.herokuapp.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "hillel-django.herokuapp.com"]
 
 # Application definition
 
@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.telegram',
+    'allauth.socialaccount.providers.github',
     'celery',
     'books',
     'customers',
@@ -101,9 +101,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'hillel_django.authentication.SecretHeaderAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'hillel_django.authentication.SecretHeaderAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -141,7 +141,7 @@ else:
 
 DATABASES = {
     'default': DEFAULT_DATABASE,
-    'student': dj_database_url.parse("postgres://vgzibcntmwkwjt:fa5731545dbdb678b43e21db8ba7e214225d3bc7eec20ebd87f1d2cfce50e636@ec2-34-250-252-161.eu-west-1.compute.amazonaws.com:5432/df6mqa9p7d1v6o")
+    # 'students': dj_database_url.parse("postgres://vgzibcntmwkwjt:fa5731545dbdb678b43e21db8ba7e214225d3bc7eec20ebd87f1d2cfce50e636@ec2-34-250-252-161.eu-west-1.compute.amazonaws.com:5432/df6mqa9p7d1v6o")
 }
 
 # Password validation
@@ -190,6 +190,12 @@ CELERY_TIMEZONE = "GMT"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+
+# CELERY_BROKER_URL = "redis://redis:6379"
+# CELERY_RESULT_BACKEND = "redis://redis:6379"
+# CELERY_BROKER_URL = "redis://localhost:6379"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
 REDIS_HOST = os.environ.get("REDIS_HOST")
 
 # Celery with Redis
@@ -210,6 +216,10 @@ CELERY_BEAT_SCHEDULE = {
     'run_on_cron_schedule': {
         'task': 'books.tasks.run_on_cron_schedule',
         'schedule': crontab("*", "*", "*", "*", "*"),
+    },
+    'statistic_sending': {
+            'task': 'books.tasks.statistic_sending',
+            'schedule': crontab("16", "14", "*", "*", "*")
     }
 }
 
@@ -314,9 +324,10 @@ SOCIALACCOUNT_PROVIDERS = {
             'https://www.googleapis.com/auth/drive',
         ],
         'AUTH_PARAMS': {
-            'access_type': 'offline',
+            'access_type': 'online',
         }
     },
+    'github': {}
 }
 
 # Django-allauth

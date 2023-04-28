@@ -27,6 +27,7 @@ class AuthorManager(models.Manager):
 class Author(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
+    telegram_account_id = models.IntegerField(null=True)
     bio = models.TextField(blank=True, null=True)
     profile = models.OneToOneField(AuthorProfile, on_delete=models.SET_NULL, null=True, blank=True,
                                    related_name="author")
