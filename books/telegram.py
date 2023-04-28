@@ -2,7 +2,7 @@ import os
 
 import requests
 
-TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
+TELEGRAM_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_USER_ID = os.environ["TELEGRAM_USER_ID"]
 
 

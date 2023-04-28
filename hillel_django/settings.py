@@ -49,16 +49,16 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_celery_beat',
     'django_filters',
-    'drf_yasg',
+    'drf_yasg', 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.telegram',
+    'django_telegram_login',
     'celery',
     'books',
     'customers',
-    'students',
     'django_celery_results',
 ]
 
@@ -314,8 +314,15 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'offline',
         }
     },
+    'telegram': {
+        'SCOPE': ['phone', 'email'],
+        'PARAMS': {
+            'bot_token': os.environ.get("TELEGRAM_BOT_TOKEN"),
+            'api_id': os.environ.get("API_ID"),
+            'api_hash': os.environ.get("API_HASH"),
+        }
+    }
 }
-
 # Django-allauth
 SITE_ID = 2
 
