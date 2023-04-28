@@ -31,9 +31,9 @@ SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read() \
     if os.path.exists(SECRET_KEY_PATH) else "SomeDummySecretKey"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG") == "True"
+DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "hillel-django.herokuapp.com"]
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -54,8 +54,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.telegram',
-    'django_telegram_login',
+    'allauth.socialaccount.providers.github',
     'celery',
     'books',
     'customers',
@@ -314,13 +313,12 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'offline',
         }
     },
-    'telegram': {
-        'SCOPE': ['phone', 'email'],
-        'PARAMS': {
-            'bot_token': os.environ.get("TELEGRAM_BOT_TOKEN"),
-            'api_id': os.environ.get("API_ID"),
-            'api_hash': os.environ.get("API_HASH"),
-        }
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
     }
 }
 # Django-allauth
