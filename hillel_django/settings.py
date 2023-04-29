@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.telegram',
+    'allauth.socialaccount.providers.github',
     'celery',
     'books',
     'customers',
@@ -141,7 +141,7 @@ else:
 
 DATABASES = {
     'default': DEFAULT_DATABASE,
-    'student': dj_database_url.parse("postgres://vgzibcntmwkwjt:fa5731545dbdb678b43e21db8ba7e214225d3bc7eec20ebd87f1d2cfce50e636@ec2-34-250-252-161.eu-west-1.compute.amazonaws.com:5432/df6mqa9p7d1v6o")
+    #'student': dj_database_url.parse("postgres://vgzibcntmwkwjt:fa5731545dbdb678b43e21db8ba7e214225d3bc7eec20ebd87f1d2cfce50e636@ec2-34-250-252-161.eu-west-1.compute.amazonaws.com:5432/df6mqa9p7d1v6o")
 }
 
 # Password validation
@@ -317,6 +317,13 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'offline',
         }
     },
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
+    }
 }
 
 # Django-allauth
