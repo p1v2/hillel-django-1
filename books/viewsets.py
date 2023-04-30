@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from django.db.models import Count, Avg
+from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.filters import OrderingFilter
@@ -52,6 +53,10 @@ class BookViewSet(BaseBookViewset):
         cache.set(f"book:{kwargs['pk']}", response.data)
 
         return response
+
+    def destroy(self, request, *args, **kwargs):
+        print(f"Destroying book {kwargs}")
+        return super().destroy(request, *args, **kwargs)
 
 
 class AuthorViewSet(ModelViewSet):

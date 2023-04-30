@@ -31,7 +31,7 @@ class BookManager(models.Manager):
     _queryset_class = BookQueryset
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("authors").filter(is_archived=False)
+        return super().get_queryset().filter(is_archived=False)
 
     def create(self, **kwargs):
         kwargs["is_archived"] = False

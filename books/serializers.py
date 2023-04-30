@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import transaction
 from rest_framework import serializers
 
@@ -124,3 +125,12 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ("id", "line_items", "customer", "books")
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "password")
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
