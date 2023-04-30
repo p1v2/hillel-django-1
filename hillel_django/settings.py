@@ -31,7 +31,7 @@ SECRET_KEY = open(os.path.join(BASE_DIR, "secret_key.txt")).read() \
     if os.path.exists(SECRET_KEY_PATH) else "SomeDummySecretKey"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG") == "True"
+DEBUG = "True"
 
 ALLOWED_HOSTS = ["localhost", "hillel-django.herokuapp.com"]
 
@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.telegram',
+    'allauth.socialaccount.providers.instagram',
+    'allauth.socialaccount.providers.github',
     'celery',
     'books',
     'customers',
@@ -305,6 +307,14 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # Required by allauth template tags
+    "django.core.context_processors.request",
+    # allauth specific context processors
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
+)
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -317,12 +327,19 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'offline',
         }
     },
+    'github': {
+            'SCOPE': [
+                'user',
+                'repo',
+                'read:org',
+            ],
+    }
 }
 
 # Django-allauth
 SITE_ID = 2
 
-LOGIN_REDIRECT_URL = '/admin'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 SOCIALACCOUNT_STORE_TOKENS = True
