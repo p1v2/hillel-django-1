@@ -321,7 +321,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         }
     },
-
+    "github": {}
 }
 
 # Django-allauth
