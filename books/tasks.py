@@ -1,9 +1,10 @@
 import os
 
 from celery import shared_task
+from django.db.models import Sum
 from django.core.mail import EmailMessage
 
-from books.models import Order
+from books.models import Order, Author, Book, OrderLineItem
 from books.telegram import send_telegram_message
 
 
@@ -42,3 +43,24 @@ def send_customer_email(order_id):
 @shared_task
 def run_every_5_seconds():
     print("The task is running every 5 seconds...")
+
+
+@shared_task(autoretry_for=(BaseException,), retry_backoff=2)
+def order_created(order_id):
+    instance = OrderLineItem.objects.get(id=order_id)
+    book_name = instance.book.name
+    b: Book = Book.objects.get(name=book_name)
+    authors = b.authors.all()
+    for author in authors:
+        if author.telegram_account_id:
+            text = f'"Hi, {author.first_name}! You have your book sold. Sincerely, your Greg Ponomarenko" '
+            send_telegram_message(text, author.telegram_account_id)
+
+
+@shared_task
+def timetable_sending():
+    authors = Author.objects.annotate(total_count_sold=Sum('book__count_sold'))
+    for author in authors:
+        if author.telegram_account_id:
+            text = f'Hi, {author.first_name}! There is already {author.total_count_sold} of your books being sold"'
+            send_telegram_message(text, author.telegram_account_id)
