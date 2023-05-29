@@ -7,7 +7,7 @@ from hillel_django.permissions import IsSellerOrAdminOrReadOnly
 
 
 class BookViewSet(ModelViewSet):
-    queryset = Book.objects.select_related('country').prefetch_related('authors')
+    queryset = Book.objects.filter(archived=False)
 
     serializer_class = BookSerializer
     permission_classes = [IsSellerOrAdminOrReadOnly]
