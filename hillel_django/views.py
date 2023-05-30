@@ -18,3 +18,5 @@ def session_auth(request: Request):
         return Response(user.username)
     else:
         return Response("Unauthorized", status=401)
+
+

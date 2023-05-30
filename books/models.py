@@ -1,6 +1,7 @@
 from django.db import models
 from rest_framework.authtoken.admin import User
-
+import random
+from django.core.management.base import BaseCommand
 
 class Author(models.Model):
     first_name = models.CharField(max_length=20)
@@ -24,6 +25,18 @@ class Book(models.Model):
     country = models.ForeignKey(Country, null=True, on_delete=models.CASCADE)
     price = models.FloatField()
     seller = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    count_selled = models.IntegerField(default=0)
+
+class Command(BaseCommand):
+    help = 'Add random count_selled value to each book'
+
+    def handle(self, *args, **options):
+        books = Book.objects.all()
+        for book in books:
+            book.count_selled = random.randint(1, 100)  # Генеруємо випадкове число від 1 до 100
+            book.save()
+
+        self.stdout.write(self.style.SUCCESS('Count_selled values added successfully!'))
 
     def get_information(self):
         name_info = self.author.get_information()

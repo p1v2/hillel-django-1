@@ -8,6 +8,9 @@ class CountrySerializer(serializers.ModelSerializer):
         model = Country
         fields = ("id", "name")
 
+    def get_count_selled_books(self, obj):
+        return obj.book_set.count()
+
 
 class AuthorSerializer(serializers.ModelSerializer):
     books_count = serializers.IntegerField(read_only=True)

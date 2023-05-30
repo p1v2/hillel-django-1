@@ -22,16 +22,19 @@ from rest_framework.authtoken.views import obtain_auth_token
 import books.views
 from books import BookViewSet, AuthorViewSet
 from hillel_django.views import session_auth
+from books.viewsets import CountryViewSet
+
 
 router = routers.DefaultRouter()
 router.register("books", BookViewSet)
 router.register("authors", AuthorViewSet)
-
+router.register(r'countries', CountryViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', books.views.books_view),
     path('api/', include(router.urls)),
     path('api/token-auth', obtain_auth_token),
-    path('api/session-auth', session_auth)
+    path('api/session-auth', session_auth),
+    path('', include(router.urls)),
 ]
