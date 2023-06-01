@@ -29,6 +29,8 @@ class BaseBookViewset(ModelViewSet):
 class BookViewSet(BaseBookViewset):
     queryset = Book.objects.select_related('country').prefetch_related('authors')
 
+    def get_queryset(self):
+        return self.queryset.filter(is_archived=False)
     def list(self, request, *args, **kwargs):
         # Check if books are cached
         get_args = request.GET.dict()
