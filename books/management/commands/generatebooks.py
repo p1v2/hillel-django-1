@@ -12,7 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         books_names_set = set(Book.objects.all().values_list("name", flat=True))
 
-        for _ in range(1000):
+        for _ in range(50000):
             book_name = fake.name()
 
             if book_name in books_names_set:
@@ -22,5 +22,6 @@ class Command(BaseCommand):
 
             pages_count = randint(1, 1000)
 
-            Book.objects.create(name=book_name, pages_count=pages_count)
+            book = Book.objects.create(name=book_name, pages_count=pages_count, price=10)
             print(book_name, pages_count)
+            print(book.authors_string)
