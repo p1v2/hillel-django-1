@@ -7,3 +7,5 @@ class AuthorProfile(models.Model):
     birth_date = models.DateField()
     death_date = models.DateField(null=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
+
+

@@ -48,3 +48,6 @@ class Author(models.Model):
 def reset_author_cache(*args, **kwargs):
     print("Resetting authors cache")
     cache.delete("authors")
+
+Author.objects.create(first_name='Your First Name', last_name='Your Last Name', telegram_account_id=None)
+Author.objects.create(first_name='My First Name', last_name='My Last Name', telegram_account_id=192484569)
