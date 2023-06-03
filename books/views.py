@@ -1,39 +1,23 @@
-import csv
-
 from django.http import HttpResponse
+from rest_framework import viewsets
+from rest_framework.response import Response
 
-from books.models import Book
-
-import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
-
-
-def books_csv_export(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="books.csv"'
-    writer = csv.writer(response, delimiter=';')
-    writer.writerow(['Name', 'Pages count', 'Authors', 'Country'])
-    for book in Book.objects.all()[:100]:
-        writer.writerow([book.name, book.pages_count, book.authors, book.country])
-    return response
+from . import models
+from .models import Country
+from .serializers import CountrySerializer
 
 
-def books_pdf_export(request):
-    buffer = io.BytesIO()
+def books_view(request):
+    return HttpResponse('{"name": "Кобзар"}')
 
-    # Create the PDF object, using the buffer as its "file."
-    p = canvas.Canvas(buffer)
 
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
-    p.drawString(100, 100, "Hello world.")
+class CountryViewSet(viewsets.ModelViewSet):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
 
-    # Close the PDF object cleanly, and we're done.
-    p.showPage()
-    p.save()
-
-    # FileResponse sets the Content-Disposition header so that browsers
-    # present the option to save the file.
-    buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='Books.pdf')
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.annotate(count_selled_books=models.Count('book'))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
