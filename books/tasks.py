@@ -73,4 +73,3 @@ def send_daily_sales_notification():
         bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
         message = f"Hi, {author.first_name}! There is already {count_of_books} of your books being sold"
         bot.send_message(chat_id=author.telegram_account_id, text=message)
-        
