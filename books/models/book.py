@@ -62,6 +62,17 @@ class Book(Item):
     objects = BookManager()
     archived_objects = ArchivedBookManager()
 
+    def get_information(self):
+        information = f"name: {self.name}\n"
+        information += f"pages count: {self.pages_count}\n"
+        information += f"authors: {self.authors}\n"
+        information += f"country: {self.country}\n"
+        information += f"seller: {self.seller}\n"
+        information += f"is_archived: {self.is_archived}\n"
+        information += f"code: {self.code}\n"
+
+        return information
+
     @property
     def authors_string(self):
         authors_names = []
@@ -104,3 +115,6 @@ def reset_book_cache(*args, **kwargs):
     # keys = cache.keys('books:*') + cache.keys('book:*')
     # for key in keys:
     #     cache.delete(key)
+
+
+

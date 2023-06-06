@@ -31,6 +31,11 @@ from books.auth_views import login_view, register_view, logout_view
 from books.views import books_csv_export, books_pdf_export
 from books.viewsets import BookViewSet, AuthorViewSet, OrderViewSet, CountryViewSet, AuthorBooksViewSet
 from hillel_django.views import now_page
+from allauth.socialaccount.providers.telegram.views import TelegramAdapter
+from allauth.socialaccount.providers.oauth2.views import (
+    OAuth2CallbackView,
+    OAuth2LoginView,
+)
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -69,4 +74,6 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html")),
     path("accounts/", include("allauth.urls")),
     path("logout", LogoutView.as_view()),
+    path('accounts/telegram/login/', OAuth2LoginView.as_view(adapter=TelegramAdapter)),
+    path('accounts/telegram/callback/', OAuth2CallbackView.as_view(adapter=TelegramAdapter)),
 ]
